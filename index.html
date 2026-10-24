@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sociales: Los Kakawiras o Cacaoperas</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:linear-gradient(160deg,#fff6d6,#d9f2ff);color:#1f2a44;min-height:100vh}
+.wrap{max-width:760px;margin:0 auto;padding:16px}h1{text-align:center;font-size:2rem;margin:10px 0}h2{font-size:1.5rem;margin:8px 0}
+.card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 6px 18px rgba(0,0,0,.1);margin:14px 0}
+.btn{display:block;width:100%;font-size:1.3rem;padding:16px;margin:8px 0;border:0;border-radius:16px;cursor:pointer;color:#fff;background:#2b8de2;font-weight:700}
+.btn.g{background:#22a35a}.btn.o{background:#f08a24}.btn.r{background:#c7362b}.btn.gray{background:#8a94a8}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .btn{flex:1;min-width:140px}
+.topics label{display:block;font-size:1.25rem;padding:10px;background:#e8f3ff;border-radius:12px;margin:6px 0;cursor:pointer}
+.topics input{transform:scale(1.5);margin-right:12px}
+.q{font-size:1.45rem;font-weight:700;margin:6px 0 14px}.opt{background:#eef1f6;color:#1f2a44;text-align:left}
+.opt.ok{background:#22a35a;color:#fff}.opt.bad{background:#c7362b;color:#fff}
+.exp{font-size:1.15rem;background:#fff6d6;border-left:6px solid #ffbf00;padding:12px;border-radius:10px;margin-top:10px}
+.stats{display:flex;justify-content:space-between;font-size:1.15rem;font-weight:700;flex-wrap:wrap;gap:8px}
+.tag{display:inline-block;padding:4px 10px;border-radius:10px;background:#ffd9cc;font-size:.95rem;font-weight:700}
+.fc{min-height:200px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.4rem;cursor:pointer;background:#e8f3ff}
+.timer{font-size:2rem;text-align:center;font-weight:800;color:#c7362b}.hid{display:none}.msg{font-size:1.3rem;text-align:center;font-weight:700;min-height:1.6em}
+ul{font-size:1.1rem}li{margin:6px 0}
+</style></head><body><div class="wrap">
+<p style="margin:0"><a href="https://korckyjals-grok-bot.github.io/sociales/" style="color:#2b8de2;font-weight:700;text-decoration:none">⬅️ Todos los pueblos</a></p>
+<h1>🪶 Sociales: Los Kakawiras o Cacaoperas</h1>
+<div id="home" class="card">
+<p style="font-size:1.2rem;text-align:center">¡Hola, amiguito! ¡Aprende sobre los kakawiras o cacaoperas jugando!</p>
+<button class="btn g" onclick="showStudy()">📖 Estudiar</button>
+<div class="topics" id="topics">
+<label><input type="checkbox" value="ori" checked>🗺️ Origen y territorio</label>
+<label><input type="checkbox" value="vid" checked>🌽 Vida y cultura</label>
+<label><input type="checkbox" value="con" checked>🛡️ Conquista y legado</label>
+</div>
+<div class="row"><button class="btn" onclick="startPractice()">✏️ Practicar</button><button class="btn o" onclick="startChallenge()">⏱️ Desafío 60 s</button></div>
+<p style="text-align:center;font-size:1.1rem">🏆 Récord del desafío: <b id="best">0</b></p>
+</div>
+<div id="study" class="card hid">
+<h2 id="stTitle"></h2><div class="row" id="stTabs"></div>
+<div id="fc" class="card fc" onclick="flip()"></div>
+<p style="text-align:center">Toca la tarjeta para ver la respuesta</p>
+<div class="row"><button class="btn gray" onclick="moveFc(-1)">⬅️ Anterior</button><button class="btn" onclick="moveFc(1)">Siguiente ➡️</button></div>
+<button class="btn r" onclick="home()">🏠 Inicio</button>
+</div>
+<div id="play" class="card hid">
+<div class="stats"><span>✅ <span id="sc">0</span></span><span>🔥 Racha: <span id="st">0</span></span><span id="cnt"></span></div>
+<div id="tm" class="timer hid"></div>
+<p><span class="tag" id="tg"></span></p>
+<div class="q" id="qt"></div><div id="opts"></div>
+<div id="msg" class="msg"></div><div id="exp" class="exp hid"></div>
+<button class="btn g hid" id="nx" onclick="next()">Siguiente ➡️</button>
+<button class="btn r" onclick="finish()">Terminar</button>
+</div>
+<div id="sum" class="card hid"><h2 id="sumT"></h2><p id="sumP" style="font-size:1.2rem"></p><div id="sumL"></div>
+<button class="btn o hid" id="rep" onclick="repeatErrors()">🔁 Repasar errores</button>
+<button class="btn" onclick="home()">🏠 Inicio</button></div>
+</div>
+<script>
+const TN={"ori": "Origen y territorio", "vid": "Vida y cultura", "con": "Conquista y legado"};
+const Q=[{"c": "ori", "t": "m", "q": "¿Con qué otro nombre se conoce a los cacaoperas?", "o": ["Kakawiras", "Pipiles", "Chorotegas", "Pocomames"], "e": "Cacaoperas y kakawiras son el mismo pueblo."}, {"c": "ori", "t": "m", "q": "¿En qué departamento de El Salvador viven principalmente los kakawiras?", "o": ["Morazán", "Ahuachapán", "Sonsonate", "La Libertad"], "e": "Viven sobre todo en Morazán."}, {"c": "ori", "t": "m", "q": "¿Cuál es el principal pueblo kakawira?", "o": ["Cacaopera", "Nahuizalco", "Chalchuapa", "Citalá"], "e": "El municipio de Cacaopera, en Morazán."}, {"c": "ori", "t": "m", "q": "¿Qué otro lugar, en La Unión, fue un núcleo histórico de habla cacaopera?", "o": ["Lislique", "Izalco", "Tejutla", "Panchimalco"], "e": "Lislique (La Unión) también hablaba cacaopera."}, {"c": "ori", "t": "m", "q": "¿A qué familia de lenguas pertenecía el idioma cacaopera?", "o": ["Misumalpa", "Maya", "Nahua", "Otomangue"], "e": "Era una lengua misumalpa, como el misquito y el sumo."}, {"c": "ori", "t": "m", "q": "¿Con qué lengua de Nicaragua estaba muy emparentado el cacaopera?", "o": ["El matagalpa", "El inglés", "El náhuatl", "El quechua"], "e": "Cacaopera y matagalpa eran lenguas hermanas."}, {"c": "ori", "t": "m", "q": "¿Desde dónde habrían llegado sus antepasados, según algunos estudios?", "o": ["Desde Honduras o Nicaragua, al este", "Desde México", "Desde Europa", "Desde Perú"], "e": "Se cree que migraron desde el este antes de la conquista (es una hipótesis)."}, {"c": "ori", "t": "v", "q": "El idioma cacaopera ya no tiene hablantes nativos.", "a": true, "e": "¡Cierto! Es una lengua extinta como lengua materna; en 1974 solo algunos ancianos recordaban palabras."}, {"c": "ori", "t": "m", "q": "¿Qué otro nombre se le da al idioma cacaopera?", "o": ["Pisbi", "Náhuat", "Potón", "Mangue"], "e": "Algunas fuentes lo llaman pisbi."}, {"c": "ori", "t": "v", "q": "Los kakawiras están emparentados con los pipiles por el idioma.", "a": false, "e": "Falso. Su lengua era misumalpa; el náhuat pipil es de otra familia."}, {"c": "ori", "t": "m", "q": "¿Qué pueblo vecino vivía también en el oriente salvadoreño?", "o": ["Los lencas", "Los pocomames", "Los aztecas", "Los incas"], "e": "Los lencas eran sus vecinos."}, {"c": "ori", "t": "m", "q": "Según el censo de 2024, ¿aproximadamente cuántas personas se identificaron como kakawira?", "o": ["Unas 6 mil", "Un millón", "Diez personas", "Cien millones"], "e": "Unas 6,255 personas; la mayoría vive en Morazán."}, {"c": "ori", "t": "m", "q": "¿Qué nombre se usó a veces para ellos en documentos antiguos, causando confusión?", "o": ["Ulúa", "Maya", "Inca", "Azteca"], "e": "«Ulúa» se usó para varios pueblos misumalpas."}, {"c": "ori", "t": "v", "q": "Hoy los kakawiras son reconocidos como uno de los pueblos indígenas de El Salvador.", "a": true, "e": "¡Cierto! Junto con nahuas-pipiles y lencas."}, {"c": "vid", "t": "m", "q": "¿Cuál es la danza tradicional más famosa de Cacaopera?", "o": ["La Danza de los Emplumados", "El vals", "El tango", "La salsa"], "e": "Los Emplumados es su danza más famosa."}, {"c": "vid", "t": "m", "q": "¿Qué otro nombre tiene la Danza de los Emplumados?", "o": ["Danza del Sol de la Mañana", "Danza de la Luna Llena", "Baile de Navidad", "Danza del Mar"], "e": "También se llama «Danza del Sol de la Mañana»."}, {"c": "vid", "t": "m", "q": "¿Con qué se relaciona la Danza de los Emplumados?", "o": ["Con el sol, la lluvia y las cosechas", "Con el fútbol", "Con los aviones", "Con la nieve"], "e": "Es un ritual ancestral para agradecer y pedir buenas cosechas."}, {"c": "vid", "t": "m", "q": "¿Qué llevan en la cabeza los danzantes emplumados?", "o": ["Penachos de plumas", "Cascos de bombero", "Gorras de béisbol", "Coronas de oro"], "e": "Usan penachos de plumas y sonajas."}, {"c": "vid", "t": "m", "q": "¿En qué mes se baila la Danza de los Emplumados?", "o": ["En enero", "En julio", "En diciembre solamente", "Nunca"], "e": "Se presenta en enero, en las fiestas de Cacaopera."}, {"c": "vid", "t": "m", "q": "¿Qué otra danza tradicional hay en Cacaopera?", "o": ["Los Negritos", "El ballet", "El hip hop", "La cumbia"], "e": "Los Negritos es otra danza tradicional."}, {"c": "vid", "t": "v", "q": "Los Emplumados de Cacaopera ganaron un premio nacional de cultura.", "a": true, "e": "¡Cierto! Ganaron un premio nacional de bailes y danzas tradicionales."}, {"c": "vid", "t": "m", "q": "¿Cuál era el alimento principal de los kakawiras?", "o": ["El maíz", "El trigo", "El arroz", "La papa"], "e": "El maíz era la base de su alimentación."}, {"c": "vid", "t": "m", "q": "¿Qué otros cultivos tenían?", "o": ["Frijol, ayote y maicillo", "Uvas", "Manzanas", "Kiwis"], "e": "Cultivaban la milpa."}, {"c": "vid", "t": "m", "q": "¿Qué artesanía hacen tradicionalmente con fibras de plantas?", "o": ["Hamacas, matatas y petates", "Teléfonos", "Bicicletas", "Joyas de oro"], "e": "El henequén (o mezcal) se teje para hacer hamacas y matatas."}, {"c": "vid", "t": "m", "q": "¿De qué planta sacan la fibra para tejer hamacas?", "o": ["Del henequén (mezcal)", "Del café", "Del trigo", "Del pino"], "e": "Del henequén, llamado también mezcal en la zona."}, {"c": "vid", "t": "m", "q": "¿Cómo es la espiritualidad kakawira?", "o": ["Ligada a la naturaleza, el sol y la tierra", "No tienen", "Adoran dioses griegos", "Son budistas"], "e": "Su espiritualidad ancestral honra la naturaleza."}, {"c": "vid", "t": "m", "q": "¿Qué pinturas antiguas de Morazán algunos estudios relacionan con los Emplumados?", "o": ["Las pinturas de la Gruta de Corinto", "La Mona Lisa", "Las pirámides de Egipto", "Los murales de Roma"], "e": "El Ministerio de Cultura publicó una propuesta que las relaciona; no es seguro."}, {"c": "con", "t": "m", "q": "¿Quiénes conquistaron el oriente salvadoreño en el siglo XVI?", "o": ["Los españoles", "Los vikingos", "Los ingleses", "Los chinos"], "e": "Los españoles llegaron en el siglo XVI."}, {"c": "con", "t": "m", "q": "¿Qué ciudad del oriente fundaron los españoles en 1530?", "o": ["San Miguel", "Santa Ana", "Sonsonate", "Ahuachapán"], "e": "San Miguel, en 1530."}, {"c": "con", "t": "m", "q": "¿Qué pasó con el centro ceremonial indígena de Cacaopera, según la tradición oral?", "o": ["Se construyó la iglesia católica sobre él", "Se volvió un estadio", "Se hundió en el mar", "Nunca existió"], "e": "Según testimonios, la iglesia se construyó sobre el antiguo altar indígena."}, {"c": "con", "t": "v", "q": "Después de la conquista, el idioma cacaopera fue desapareciendo poco a poco.", "a": true, "e": "¡Cierto! El castellano lo reemplazó."}, {"c": "con", "t": "m", "q": "¿Qué museo de Cacaopera guarda la historia kakawira?", "o": ["El Museo Winakirika", "El Louvre", "El Museo del Prado", "El Smithsonian"], "e": "El Museo Winakirika, fundado por Miguel Ángel Amaya Amaya."}, {"c": "con", "t": "m", "q": "¿Qué se puede ver en el Museo Winakirika?", "o": ["Cultura popular, arqueología y documentos de la comunidad", "Dinosaurios vivos", "Aviones", "Autos de carreras"], "e": "Muestra la cultura y la historia del pueblo."}, {"c": "con", "t": "v", "q": "Hoy hay jóvenes kakawiras que aprenden las danzas de sus abuelos.", "a": true, "e": "¡Cierto! Las tradiciones se transmiten de generación en generación."}, {"c": "con", "t": "m", "q": "¿Qué causó muchas muertes tras la conquista?", "o": ["Enfermedades de Europa", "El frío", "Los meteoritos", "Los dinosaurios"], "e": "Enfermedades como la viruela."}, {"c": "con", "t": "m", "q": "¿Qué podemos hacer para que las tradiciones kakawiras no se pierdan?", "o": ["Conocerlas, valorarlas y visitarlas con respeto", "Olvidarlas", "Burlarnos", "Prohibirlas"], "e": "Valorarlas ayuda a conservarlas."}, {"c": "con", "t": "m", "q": "¿Qué artesanía kakawira seguimos usando en muchas casas salvadoreñas?", "o": ["La hamaca", "El microondas", "El televisor", "La lavadora"], "e": "¡La hamaca es herencia indígena!"}, {"c": "con", "t": "v", "q": "Los kakawiras son el pueblo indígena con más presencia en Morazán.", "a": true, "e": "¡Cierto! La mayoría de quienes se identifican kakawira viven en Morazán."}, {"c": "ori", "t": "m", "q": "¿Cuántos pueblos indígenas reconoció el censo de 2007 en El Salvador?", "o": ["Tres: nahua-pipil, lenca y cacaopera", "Ninguno", "Veinte", "Solo uno"], "e": "El censo reconoció nahua-pipil, lenca y cacaopera (kakawira)."}, {"c": "vid", "t": "m", "q": "¿Qué es una matata?", "o": ["Una bolsa tejida con fibras", "Un instrumento de metal", "Una comida", "Un baile"], "e": "La matata es una red o bolsa tejida, típica del campo salvadoreño."}, {"c": "con", "t": "m", "q": "¿Quién fundó el Museo Winakirika?", "o": ["Miguel Ángel Amaya Amaya", "Pedro de Alvarado", "Lempira", "Cristóbal Colón"], "e": "Fue fundado por Miguel Ángel Amaya Amaya."}];
+const CARDS={"ori": [["¿Quiénes son los kakawiras?", "Un pueblo indígena del oriente de El Salvador, también llamado cacaopera."], ["¿Dónde viven?", "En Morazán, sobre todo en Cacaopera. Lislique (La Unión) también fue núcleo histórico."], ["Idioma", "El cacaopera (o pisbi), lengua misumalpa hermana del matagalpa. Hoy extinta."], ["Origen", "Según algunos estudios, llegaron desde Honduras o Nicaragua antes de la conquista."], ["Hoy", "Unas 6 mil personas se identificaron como kakawira en el censo de 2024."]], "vid": [["Los Emplumados", "Danza del Sol de la Mañana, en enero, con penachos de plumas y sonajas."], ["Los Negritos", "Otra danza tradicional de Cacaopera."], ["Artesanías", "Hamacas, matatas y petates de henequén (mezcal)."], ["Alimentación", "Maíz, frijol, ayote y maicillo."], ["Espiritualidad", "Honra al sol, la lluvia y la tierra."], ["Matata", "Bolsa o red tejida con fibras."]], "con": [["La conquista", "Los españoles llegaron en el siglo XVI; San Miguel se fundó en 1530."], ["La iglesia", "Según la tradición oral, se construyó sobre el antiguo altar indígena."], ["Museo Winakirika", "Guarda la historia y la cultura de Cacaopera."], ["Herencia", "Danzas, hamacas y espiritualidad que siguen vivas."]]};
+Q.forEach((q,i)=>q.id=i);
+const $=id=>document.getElementById(id);
+let pool=[],cur=null,score=0,streak=0,done=0,missed={},answered=false,chal=false,timer=null,left=0,weight={},last=-1;
+$("best").textContent=localStorage.getItem("kakawiras_best")||0;
+function show(id){["home","study","play","sum"].forEach(x=>$(x).classList.toggle("hid",x!==id))}
+function home(){stop();$("best").textContent=localStorage.getItem("kakawiras_best")||0;show("home")}
+function sel(){const s=[...document.querySelectorAll("#topics input:checked")].map(i=>i.value);return s.length?s:["ori","vid","con"]}
+let fcT="ori",fcI=0,fcF=false;
+function showStudy(){$("stTabs").innerHTML=Object.keys(TN).map(k=>`<button class="btn ${k==fcT?'g':'gray'}" onclick="fcT='${k}';fcI=0;showStudy()">${TN[k]}</button>`).join("");$("stTitle").textContent="📖 "+TN[fcT];fcF=false;drawFc();show("study")}
+function drawFc(){const c=CARDS[fcT][fcI];$("fc").innerHTML=fcF?`<div>${c[1]}</div>`:`<b>${c[0]}</b>`}
+function flip(){fcF=!fcF;drawFc()}
+function moveFc(d){const n=CARDS[fcT].length;fcI=(fcI+d+n)%n;fcF=false;drawFc();$("stTitle").textContent=`📖 ${TN[fcT]} (${fcI+1}/${n})`}
+function begin(list,isChal){pool=list;score=0;streak=0;done=0;missed={};weight={};last=-1;chal=isChal;list.forEach(q=>weight[q.id]=1);
+$("sc").textContent=0;$("st").textContent=0;show("play");stop();
+if(chal){left=60;$("tm").classList.remove("hid");$("tm").textContent="⏱️ 60";timer=setInterval(()=>{left--;$("tm").textContent="⏱️ "+left;if(left<=0)finish()},1000)}else $("tm").classList.add("hid");next()}
+function startPractice(){const s=sel();begin(Q.filter(q=>s.includes(q.c)),false)}
+function startChallenge(){const s=sel();begin(Q.filter(q=>s.includes(q.c)),true)}
+function repeatErrors(){begin(Q.filter(q=>missed[q.id]),false)}
+function stop(){if(timer){clearInterval(timer);timer=null}}
+function pick(){let tot=0;const c=pool.filter(q=>q.id!==last||pool.length==1);c.forEach(q=>tot+=weight[q.id]);let r=Math.random()*tot;for(const q of c){r-=weight[q.id];if(r<=0)return q}return c[0]}
+function shuf(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function next(){cur=pick();last=cur.id;answered=false;$("tg").textContent=TN[cur.c]+(cur.t=="v"?" · ¿Verdadero o falso?":"");
+$("qt").textContent=cur.q;$("cnt").textContent="Preguntas: "+done;
+let opts,right;if(cur.t=="m"){opts=shuf(cur.o);right=cur.o[0]}else if(cur.t=="v"){opts=["Verdadero","Falso"];right=cur.a?"Verdadero":"Falso"}else{opts=["Mayas","Pipiles"];right=cur.a}
+cur.right=right;$("opts").innerHTML="";opts.forEach(o=>{const b=document.createElement("button");b.className="btn opt";b.textContent=o;b.onclick=()=>answer(b,o);$("opts").appendChild(b)});
+$("msg").textContent="";$("exp").classList.add("hid");$("nx").classList.add("hid")}
+const GOOD=["¡Muy bien! 🎉","¡Excelente! ⭐","¡Correcto! 👏","¡Eres un crack! 🚀","¡Súper! 💪"];
+function answer(b,o){if(answered)return;answered=true;done++;const ok=o===cur.right;
+[...$("opts").children].forEach(x=>{if(x.textContent===cur.right)x.classList.add("ok")});
+if(ok){score++;streak++;weight[cur.id]=Math.max(1,weight[cur.id]-1);$("msg").textContent=GOOD[Math.floor(Math.random()*GOOD.length)]+(streak>=3?` ¡Racha de ${streak}! 🔥`:"")}
+else{b.classList.add("bad");streak=0;missed[cur.id]=1;weight[cur.id]+=3;$("msg").textContent="¡Casi! Mira la respuesta correcta 💡"}
+$("sc").textContent=score;$("st").textContent=streak;$("cnt").textContent="Preguntas: "+done;
+if(chal){setTimeout(()=>{if(chal&&left>0)next()},ok?600:1600);return}
+$("exp").textContent="ℹ️ "+cur.e;$("exp").classList.remove("hid");$("nx").classList.remove("hid")}
+function finish(){stop();const wasChal=chal;chal=false;let t="¡Buen trabajo, amiguito! 🌟";
+if(wasChal){const best=+(localStorage.getItem("kakawiras_best")||0);if(score>best){localStorage.setItem("kakawiras_best",score);t="🏆 ¡Nuevo récord: "+score+"!"}}
+$("sumT").textContent=t;$("sumP").textContent=`Respondiste bien ${score} de ${done} preguntas.`;
+const m=Q.filter(q=>missed[q.id]);$("sumL").innerHTML=m.length?"<h3>Para repasar:</h3><ul>"+m.map(q=>`<li><b>${q.q}</b><br>✔️ ${q.t=="m"?q.o[0]:q.t=="v"?(q.a?"Verdadero":"Falso"):q.a} — ${q.e}</li>`).join("")+"</ul>":"<p>¡No tuviste errores! 🎉</p>";
+$("rep").classList.toggle("hid",!m.length);show("sum")}
+</script></body></html>
